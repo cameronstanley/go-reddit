@@ -1,78 +1,86 @@
 package reddit
 
 import (
-  "encoding/json"
-  "fmt"
-  "io/ioutil"
-  "net/http"
+	"encoding/json"
+	"fmt"
+	"net/http"
 )
 
-type Subreddits struct {
-	Kind string `json:"kind"`
-	Data struct {
-		Modhash string `json:"modhash"`
-		Children []struct {
-			Kind string `json:"kind"`
-			Data struct {
-				BannerImg string `json:"banner_img"`
-				UserSrThemeEnabled bool `json:"user_sr_theme_enabled"`
-				SubmitTextHTML string `json:"submit_text_html"`
-				UserIsBanned interface{} `json:"user_is_banned"`
-				WikiEnabled bool `json:"wiki_enabled"`
-				ShowMedia bool `json:"show_media"`
-				ID string `json:"id"`
-				SubmitText string `json:"submit_text"`
-				DisplayName string `json:"display_name"`
-				HeaderImg string `json:"header_img"`
-				DescriptionHTML string `json:"description_html"`
-				Title string `json:"title"`
-				CollapseDeletedComments bool `json:"collapse_deleted_comments"`
-				Over18 bool `json:"over18"`
-				PublicDescriptionHTML string `json:"public_description_html"`
-				IconSize []int `json:"icon_size"`
-				SuggestedCommentSort interface{} `json:"suggested_comment_sort"`
-				IconImg string `json:"icon_img"`
-				HeaderTitle interface{} `json:"header_title"`
-				Description string `json:"description"`
-				UserIsMuted interface{} `json:"user_is_muted"`
-				SubmitLinkLabel interface{} `json:"submit_link_label"`
-				AccountsActive interface{} `json:"accounts_active"`
-				PublicTraffic bool `json:"public_traffic"`
-				HeaderSize []int `json:"header_size"`
-				Subscribers int `json:"subscribers"`
-				SubmitTextLabel interface{} `json:"submit_text_label"`
-				Lang string `json:"lang"`
-				UserIsModerator interface{} `json:"user_is_moderator"`
-				KeyColor string `json:"key_color"`
-				Name string `json:"name"`
-				Created int `json:"created"`
-				URL string `json:"url"`
-				Quarantine bool `json:"quarantine"`
-				HideAds bool `json:"hide_ads"`
-				CreatedUtc int `json:"created_utc"`
-				BannerSize interface{} `json:"banner_size"`
-				UserIsContributor interface{} `json:"user_is_contributor"`
-				PublicDescription string `json:"public_description"`
-				ShowMediaPreview bool `json:"show_media_preview"`
-				CommentScoreHideMins int `json:"comment_score_hide_mins"`
-				SubredditType string `json:"subreddit_type"`
-				SubmissionType string `json:"submission_type"`
-				UserIsSubscriber interface{} `json:"user_is_subscriber"`
-			} `json:"data"`
-		} `json:"children"`
-		After string `json:"after"`
-		Before interface{} `json:"before"`
-	} `json:"data"`
+type Subreddit struct {
+	AccountsActive          int    `json:"accounts_active"`
+	BannerImg               string `json:"banner_img"`
+	BannerSize              []int  `json:"banner_size"`
+	CollapseDeletedComments bool   `json:"collapse_deleted_comments"`
+	CommentScoreHideMins    int    `json:"comment_score_hide_mins"`
+	Created                 int    `json:"created"`
+	CreatedUtc              int    `json:"created_utc"`
+	Description             string `json:"description"`
+	DescriptionHTML         string `json:"description_html"`
+	DisplayName             string `json:"display_name"`
+	HeaderImg               string `json:"header_img"`
+	HeaderSize              []int  `json:"header_size"`
+	HeaderTitle             string `json:"header_title"`
+	HideAds                 bool   `json:"hide_ads"`
+	IconImg                 string `json:"icon_img"`
+	IconSize                []int  `json:"icon_size"`
+	ID                      string `json:"id"`
+	KeyColor                string `json:"key_color"`
+	Lang                    string `json:"lang"`
+	Name                    string `json:"name"`
+	Over18                  bool   `json:"over18"`
+	PublicDescription       string `json:"public_description"`
+	PublicDescriptionHTML   string `json:"public_description_html"`
+	PublicTraffic           bool   `json:"public_traffic"`
+	Quarantine              bool   `json:"quarantine"`
+	ShowMedia               bool   `json:"show_media"`
+	ShowMediaPreview        bool   `json:"show_media_preview"`
+	SubmissionType          string `json:"submission_type"`
+	SubmitLinkLabel         string `json:"submit_link_label"`
+	SubmitText              string `json:"submit_text"`
+	SubmitTextHTML          string `json:"submit_text_html"`
+	SubmitTextLabel         string `json:"submit_text_label"`
+	SubredditType           string `json:"subreddit_type"`
+	Subscribers             int    `json:"subscribers"`
+	SuggestedCommentSort    string `json:"suggested_comment_sort"`
+	Title                   string `json:"title"`
+	URL                     string `json:"url"`
+	UserIsBanned            bool   `json:"user_is_banned"`
+	UserIsContributor       bool   `json:"user_is_contributor"`
+	UserIsModerator         bool   `json:"user_is_moderator"`
+	UserIsMuted             bool   `json:"user_is_muted"`
+	UserIsSubscriber        bool   `json:"user_is_subscriber"`
+	UserSrThemeEnabled      bool   `json:"user_sr_theme_enabled"`
+	WikiEnabled             bool   `json:"wiki_enabled"`
 }
 
-func (c *Client) GetDefaultSubreddits() {
-  url :=  fmt.Sprintf("%s/subreddits/default.json", baseUrl)
-  resp, _ := http.Get(url)
-  defer resp.Body.Close()
+func (c *Client) GetDefaultSubreddits() ([]*Subreddit, error) {
+	url := fmt.Sprintf("%s/subreddits/default.json", baseUrl)
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
 
-  body, _ := ioutil.ReadAll(resp.Body)
-  fmt.Print(string(body))
+	var result struct {
+		Kind string `json:"kind"`
+		Data struct {
+			Modhash  string `json:"modhash"`
+			Children []struct {
+				Kind string    `json:"kind"`
+				Data Subreddit `json:"data"`
+			} `json:"children"`
+		} `json:"data"`
+	}
 
-  var subreddits Subreddits
-  json.NewDecoder(resp.Body).Decode(&subreddits)
+	err = json.NewDecoder(resp.Body).Decode(&result)
+	if err != nil {
+		return nil, err
+	}
+
+	var subreddits []*Subreddit
+	for _, subreddit := range result.Data.Children {
+		subreddits = append(subreddits, &subreddit.Data)
+	}
+
+	return subreddits, nil
 }
