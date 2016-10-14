@@ -53,25 +53,34 @@ type Subreddit struct {
 	WikiEnabled             bool   `json:"wiki_enabled"`
 }
 
+type subredditListing struct {
+	Kind string `json:"kind"`
+	Data struct {
+		Modhash  string `json:"modhash"`
+		Children []struct {
+			Kind string    `json:"kind"`
+			Data Subreddit `json:"data"`
+		} `json:"children"`
+	} `json:"data"`
+}
+
 func (c *Client) GetDefaultSubreddits() ([]*Subreddit, error) {
-	url := fmt.Sprintf("%s/subreddits/default.json", baseUrl)
+	return c.getSubreddits("default")
+}
+
+func (c *Client) GetPopularSubreddits() ([]*Subreddit, error) {
+	return c.getSubreddits("popular")
+}
+
+func (c *Client) getSubreddits(where string) ([]*Subreddit, error) {
+	url := fmt.Sprintf("%s/subreddits/%s.json", baseUrl, where)
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
 
-	var result struct {
-		Kind string `json:"kind"`
-		Data struct {
-			Modhash  string `json:"modhash"`
-			Children []struct {
-				Kind string    `json:"kind"`
-				Data Subreddit `json:"data"`
-			} `json:"children"`
-		} `json:"data"`
-	}
-
+	var result subredditListing
 	err = json.NewDecoder(resp.Body).Decode(&result)
 	if err != nil {
 		return nil, err
@@ -83,4 +92,5 @@ func (c *Client) GetDefaultSubreddits() ([]*Subreddit, error) {
 	}
 
 	return subreddits, nil
+
 }

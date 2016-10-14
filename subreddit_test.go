@@ -7,15 +7,42 @@ import (
 	"testing"
 )
 
-func TestGetDefaultSubreddits(t *testing.T) {
+func mockResponseFromFile(url string, filepath string) {
 	httpmock.Activate()
+	response, _ := ioutil.ReadFile(filepath)
+	httpmock.RegisterResponder("GET", url, httpmock.NewStringResponder(200, string(response)))
+}
+
+func checkError(err error, t *testing.T) {
+	if err != nil {
+		t.Error("Expected no error, got ", err)
+	}
+}
+
+func checkSliceSize(slice []*Subreddit, expectedSize int, t *testing.T) {
+	if len(slice) != expectedSize {
+		t.Error(fmt.Sprintf("Expected %d elements, got ", expectedSize), len(slice))
+	}
+}
+
+func TestGetDefaultSubreddits(t *testing.T) {
+	url := fmt.Sprintf("%s/subreddits/default.json", baseUrl)
+	mockResponseFromFile(url, "test_data/default_subreddits.json")
 	defer httpmock.DeactivateAndReset()
 
-	response, _ := ioutil.ReadFile("test_data/default_subreddits.json")
+	client := new(Client)
+	subreddits, err := client.GetDefaultSubreddits()
+	checkError(err, t)
+	checkSliceSize(subreddits, 25, t)
+}
 
-	url := fmt.Sprintf("%s/subreddits/default.json", baseUrl)
-	httpmock.RegisterResponder("GET", url, httpmock.NewStringResponder(200, string(response)))
+func TestGetPopularSubreddits(t *testing.T) {
+	url := fmt.Sprintf("%s/subreddits/popular.json", baseUrl)
+	mockResponseFromFile(url, "test_data/default_subreddits.json")
+	defer httpmock.DeactivateAndReset()
 
 	client := new(Client)
-	client.GetDefaultSubreddits()
+	subreddits, err := client.GetPopularSubreddits()
+	checkError(err, t)
+	checkSliceSize(subreddits, 25, t)
 }
