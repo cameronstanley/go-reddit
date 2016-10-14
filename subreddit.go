@@ -68,6 +68,14 @@ func (c *Client) GetDefaultSubreddits() ([]*Subreddit, error) {
 	return c.getSubreddits("default")
 }
 
+func (c *Client) GetGoldSubreddits() ([]*Subreddit, error) {
+	return c.getSubreddits("gold")
+}
+
+func (c *Client) GetNewSubreddits() ([]*Subreddit, error) {
+	return c.getSubreddits("new")
+}
+
 func (c *Client) GetPopularSubreddits() ([]*Subreddit, error) {
 	return c.getSubreddits("popular")
 }
@@ -92,5 +100,4 @@ func (c *Client) getSubreddits(where string) ([]*Subreddit, error) {
 	}
 
 	return subreddits, nil
-
 }
