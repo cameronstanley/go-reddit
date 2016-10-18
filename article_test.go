@@ -1,8 +1,9 @@
 package reddit
 
 import (
-	"fmt"
+  "fmt"
 	"github.com/jarcoal/httpmock"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -12,5 +13,7 @@ func TestGetHotArticles(t *testing.T) {
 	defer httpmock.DeactivateAndReset()
 
 	client := new(Client)
-	client.GetHotArticles("news")
+  articles, err := client.GetHotArticles("news")
+  assert.NoError(t, err)
+  assert.Equal(t, len(articles), 3)
 }

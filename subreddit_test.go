@@ -3,6 +3,7 @@ package reddit
 import (
 	"fmt"
 	"github.com/jarcoal/httpmock"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -13,8 +14,8 @@ func TestGetDefaultSubreddits(t *testing.T) {
 
 	client := new(Client)
 	subreddits, err := client.GetDefaultSubreddits()
-	checkError(err, t)
-	checkSliceSize(subreddits, 3, t)
+	assert.NoError(t, err)
+	assert.Equal(t, len(subreddits), 3, t)
 }
 
 func TestGetGoldSubreddits(t *testing.T) {
@@ -24,8 +25,8 @@ func TestGetGoldSubreddits(t *testing.T) {
 
 	client := new(Client)
 	subreddits, err := client.GetGoldSubreddits()
-	checkError(err, t)
-	checkSliceSize(subreddits, 0, t)
+	assert.NoError(t, err)
+	assert.Equal(t, len(subreddits), 0)
 }
 
 func TestGetNewSubreddits(t *testing.T) {
@@ -35,8 +36,8 @@ func TestGetNewSubreddits(t *testing.T) {
 
 	client := new(Client)
 	subreddits, err := client.GetNewSubreddits()
-	checkError(err, t)
-	checkSliceSize(subreddits, 3, t)
+	assert.NoError(t, err)
+	assert.Equal(t, len(subreddits), 3)
 }
 
 func TestGetPopularSubreddits(t *testing.T) {
@@ -46,6 +47,6 @@ func TestGetPopularSubreddits(t *testing.T) {
 
 	client := new(Client)
 	subreddits, err := client.GetPopularSubreddits()
-	checkError(err, t)
-	checkSliceSize(subreddits, 3, t)
+	assert.NoError(t, err)
+	assert.Equal(t, len(subreddits), 3)
 }
