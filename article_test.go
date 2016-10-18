@@ -1,7 +1,7 @@
 package reddit
 
 import (
-  "fmt"
+	"fmt"
 	"github.com/jarcoal/httpmock"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -13,9 +13,9 @@ func TestGetHotArticles(t *testing.T) {
 	defer httpmock.DeactivateAndReset()
 
 	client := Client{}
-  articles, err := client.GetHotArticles("news")
-  assert.NoError(t, err)
-  assert.Equal(t, len(articles), 3)
+	articles, err := client.GetHotArticles("news")
+	assert.NoError(t, err)
+	assert.Equal(t, len(articles), 3)
 }
 
 func TestGetNewArticles(t *testing.T) {
@@ -24,9 +24,9 @@ func TestGetNewArticles(t *testing.T) {
 	defer httpmock.DeactivateAndReset()
 
 	client := Client{}
-  articles, err := client.GetNewArticles("news")
-  assert.NoError(t, err)
-  assert.Equal(t, len(articles), 3)
+	articles, err := client.GetNewArticles("news")
+	assert.NoError(t, err)
+	assert.Equal(t, len(articles), 3)
 }
 
 func TestGetTopArticles(t *testing.T) {
@@ -35,7 +35,7 @@ func TestGetTopArticles(t *testing.T) {
 	defer httpmock.DeactivateAndReset()
 
 	client := Client{}
-  articles, err := client.GetTopArticles("news")
-  assert.NoError(t, err)
-  assert.Equal(t, len(articles), 3)
+	articles, err := client.GetTopArticles("news")
+	assert.NoError(t, err)
+	assert.Equal(t, len(articles), 3)
 }
