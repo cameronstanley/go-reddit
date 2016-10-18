@@ -78,6 +78,14 @@ func (c *Client) GetHotArticles(subreddit string) ([]*Article, error) {
 	return c.getArticles(subreddit, "hot")
 }
 
+func (c *Client) GetNewArticles(subreddit string) ([]*Article, error) {
+	return c.getArticles(subreddit, "new")
+}
+
+func (c *Client) GetTopArticles(subreddit string) ([]*Article, error) {
+	return c.getArticles(subreddit, "top")
+}
+
 func (c *Client) getArticles(subreddit string, sort string) ([]*Article, error) {
 	url := fmt.Sprintf("%s/r/%s/%s.json", baseUrl, subreddit, sort)
 	resp, err := http.Get(url)
