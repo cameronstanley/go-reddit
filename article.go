@@ -72,14 +72,17 @@ type articleListing struct {
 	} `json:"data"`
 }
 
+// Retrieves a listing of hot articles.
 func (c *Client) GetHotArticles(subreddit string) ([]*Article, error) {
 	return c.getArticles(subreddit, "hot")
 }
 
+// Retrieves a listing of new articles.
 func (c *Client) GetNewArticles(subreddit string) ([]*Article, error) {
 	return c.getArticles(subreddit, "new")
 }
 
+// Retrieves a listing of top articles
 func (c *Client) GetTopArticles(subreddit string) ([]*Article, error) {
 	return c.getArticles(subreddit, "top")
 }

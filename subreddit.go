@@ -64,18 +64,22 @@ type subredditListing struct {
 	} `json:"data"`
 }
 
+// Retrievves a listing of default subreddits
 func (c *Client) GetDefaultSubreddits() ([]*Subreddit, error) {
 	return c.getSubreddits("default")
 }
 
+// Retrieves a listing of gold subreddits
 func (c *Client) GetGoldSubreddits() ([]*Subreddit, error) {
 	return c.getSubreddits("gold")
 }
 
+// Retrieves a listing of new subreddits
 func (c *Client) GetNewSubreddits() ([]*Subreddit, error) {
 	return c.getSubreddits("new")
 }
 
+// Retrieves a listing of popular subreddits
 func (c *Client) GetPopularSubreddits() ([]*Subreddit, error) {
 	return c.getSubreddits("popular")
 }
