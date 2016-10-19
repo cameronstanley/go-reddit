@@ -16,12 +16,12 @@ Install the package with
 ## Examples
 
 ````Go
-// Returns a new client for invoking the API
-client := reddit.Client{}
+// Returns a new unauthenticated client for invoking the API
+client := reddit.NoAuthClient
 
 // Retrives a listing of default subreddits
 client.GetDefaultSubreddits()
 
 // Retrives a listing of hot articles for the "news" subreddit
 client.GetHotArticles("news")
-```
+````

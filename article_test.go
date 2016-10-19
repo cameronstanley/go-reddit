@@ -12,7 +12,7 @@ func TestGetHotArticles(t *testing.T) {
 	mockResponseFromFile(url, "test_data/article/hot_articles.json")
 	defer httpmock.DeactivateAndReset()
 
-	client := Client{}
+	client := NoAuthClient
 	articles, err := client.GetHotArticles("news")
 	assert.NoError(t, err)
 	assert.Equal(t, len(articles), 3)
@@ -23,7 +23,7 @@ func TestGetNewArticles(t *testing.T) {
 	mockResponseFromFile(url, "test_data/article/new_articles.json")
 	defer httpmock.DeactivateAndReset()
 
-	client := Client{}
+	client := NoAuthClient
 	articles, err := client.GetNewArticles("news")
 	assert.NoError(t, err)
 	assert.Equal(t, len(articles), 3)
@@ -34,7 +34,7 @@ func TestGetTopArticles(t *testing.T) {
 	mockResponseFromFile(url, "test_data/article/top_articles.json")
 	defer httpmock.DeactivateAndReset()
 
-	client := Client{}
+	client := NoAuthClient
 	articles, err := client.GetTopArticles("news")
 	assert.NoError(t, err)
 	assert.Equal(t, len(articles), 3)

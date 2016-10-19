@@ -3,7 +3,6 @@ package reddit
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
 )
 
 type Subreddit struct {
@@ -86,7 +85,7 @@ func (c *Client) GetPopularSubreddits() ([]*Subreddit, error) {
 
 func (c *Client) getSubreddits(where string) ([]*Subreddit, error) {
 	url := fmt.Sprintf("%s/subreddits/%s.json", baseUrl, where)
-	resp, err := http.Get(url)
+	resp, err := c.http.Get(url)
 	if err != nil {
 		return nil, err
 	}

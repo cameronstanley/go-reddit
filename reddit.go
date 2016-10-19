@@ -1,5 +1,15 @@
 package reddit
 
+import (
+	"net/http"
+)
+
+type Client struct {
+	http *http.Client
+}
+
 const baseUrl = "http://reddit.com"
 
-type Client struct{}
+var NoAuthClient = &Client{
+	http: new(http.Client),
+}

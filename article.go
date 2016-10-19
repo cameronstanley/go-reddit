@@ -3,7 +3,6 @@ package reddit
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
 )
 
 type Article struct {
@@ -89,7 +88,7 @@ func (c *Client) GetTopArticles(subreddit string) ([]*Article, error) {
 
 func (c *Client) getArticles(subreddit string, sort string) ([]*Article, error) {
 	url := fmt.Sprintf("%s/r/%s/%s.json", baseUrl, subreddit, sort)
-	resp, err := http.Get(url)
+	resp, err := c.http.Get(url)
 	if err != nil {
 		return nil, err
 	}
