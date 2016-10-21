@@ -9,6 +9,27 @@ type Authenticator struct {
 	state  string
 }
 
+const (
+	ScopeIdentity        = "identity"
+	ScopeEdit            = "edit"
+	ScopeFlair           = "flair"
+	ScopeHistory         = "history"
+	ScopeModConfig       = "modconfig"
+	ScopeModFlair        = "modflair"
+	ScopeModLog          = "modlog"
+	ScopeModWiki         = "modwiki"
+	ScopeMySubreddits    = "mysubreddits"
+	ScopePrivateMessages = "privatemessages"
+	ScopeRead            = "read"
+	ScopeReport          = "report"
+	ScopeSave            = "save"
+	ScopeSubmit          = "submit"
+	ScopeSubscribe       = "subscribe"
+	ScopeVote            = "vote"
+	ScopeWikiEdit        = "wikiedit"
+	ScopeWikiRead        = "wikiread"
+)
+
 func NewAuthenticator(clientID string, clientSecret string, state string, scopes ...string) *Authenticator {
 	config := &oauth2.Config{
 		ClientID:     clientID,
