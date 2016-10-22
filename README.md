@@ -13,6 +13,10 @@ Install the package with
 
 `go get github.com/cameronstanley/go-reddit`
 
+## Authentication
+
+Many endpoints in the Reddit API require OAuth2 authentication to access. To get started, register an app at https://www.reddit.com/prefs/apps and be sure to note the ID, secret, and redirect URI. 
+
 ## Examples
 
 ````Go
