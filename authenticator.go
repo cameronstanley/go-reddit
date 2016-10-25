@@ -1,6 +1,7 @@
 package reddit
 
 import (
+	"errors"
 	"golang.org/x/oauth2"
 )
 
@@ -10,6 +11,9 @@ type Authenticator struct {
 }
 
 const (
+	authUrl  = "https://www.reddit.com/api/v1/authorize"
+	tokenUrl = "https://www.reddit.com/api/v1/access_token"
+
 	ScopeIdentity        = "identity"
 	ScopeEdit            = "edit"
 	ScopeFlair           = "flair"
@@ -30,15 +34,16 @@ const (
 	ScopeWikiRead        = "wikiread"
 )
 
-func NewAuthenticator(clientID string, clientSecret string, state string, scopes ...string) *Authenticator {
+func NewAuthenticator(clientID string, clientSecret string, redirectUrl string, state string, scopes ...string) *Authenticator {
 	config := &oauth2.Config{
 		ClientID:     clientID,
 		ClientSecret: clientSecret,
 		Scopes:       scopes,
 		Endpoint: oauth2.Endpoint{
-			AuthURL:  "https://www.reddit.com/api/v1/authorize",
-			TokenURL: "https://www.reddit.com/api/v1/access_token",
+			AuthURL:  authUrl,
+			TokenURL: tokenUrl,
 		},
+		RedirectURL: redirectUrl,
 	}
 
 	return &Authenticator{config: config, state: state}
@@ -46,4 +51,18 @@ func NewAuthenticator(clientID string, clientSecret string, state string, scopes
 
 func (a *Authenticator) GetAuthenticationUrl() string {
 	return a.config.AuthCodeURL(a.state)
+}
+
+func (a *Authenticator) GetToken(state string, code string) (*oauth2.Token, error) {
+	if state != a.state {
+		return nil, errors.New("Invalid state")
+	}
+
+	return a.config.Exchange(oauth2.NoContext, code)
+}
+
+func (a *Authenticator) GetAuthClient(token *oauth2.Token) *Client {
+	return &Client{
+		http: a.config.Client(oauth2.NoContext, token),
+	}
 }
