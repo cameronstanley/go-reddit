@@ -13,7 +13,7 @@ func TestGetUserInfo(t *testing.T) {
 	defer httpmock.DeactivateAndReset()
 
 	client := NoAuthClient
-	user, err := client.GetUserInfo()
+	userInfo, err := client.GetUserInfo("GovSchwarzenegger")
 	assert.NoError(t, err)
-  assert.Equal(t, user.Name, "GovSchwarzenegger")
+	assert.Equal(t, userInfo.Name, "GovSchwarzenegger")
 }
