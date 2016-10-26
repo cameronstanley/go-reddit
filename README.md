@@ -26,6 +26,6 @@ client := reddit.NoAuthClient
 // Retrives a listing of default subreddits
 client.GetDefaultSubreddits()
 
-// Retrives a listing of hot articles for the "news" subreddit
-client.GetHotArticles("news")
+// Retrives a listing of hot links for the "news" subreddit
+client.GetHotLinks("news")
 ````

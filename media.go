@@ -1,18 +1,20 @@
 package reddit
 
+// Media is a media content item.
 type Media struct {
 	Oembed Oembed `json:"oembed"`
 	Type   string `json:"type"`
 }
 
+// Oembed contains embedding information for a media item.
 type Oembed struct {
 	Description     string `json:"description"`
-	Html            string `json:"html"`
+	HTML            string `json:"html"`
 	Height          string `json:"height"`
 	ProviderName    string `json:"provider_name"`
-	ProviderUrl     string `json:"provider_url"`
+	ProviderURL     string `json:"provider_url"`
 	ThumbnailHeight int    `json:"thumbnail_height"`
-	ThumbnailUrl    string `json:"thumbnail_url"`
+	ThumbnailURL    string `json:"thumbnail_url"`
 	ThumbnailWidth  int    `json:"thumbnail_width"`
 	Title           string `json:"title"`
 	Type            string `json:"type"`

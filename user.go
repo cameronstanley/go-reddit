@@ -7,8 +7,9 @@ import (
 	"strconv"
 )
 
+// IsUsernameAvailable determines if the supplied username is available for registration.
 func (c *Client) IsUsernameAvailable(username string) (bool, error) {
-	url := fmt.Sprintf("%s/api/username_available.json?user=%s", baseUrl, username)
+	url := fmt.Sprintf("%s/api/username_available.json?user=%s", baseURL, username)
 	resp, err := c.http.Get(url)
 	if err != nil {
 		return false, err
@@ -28,8 +29,9 @@ func (c *Client) IsUsernameAvailable(username string) (bool, error) {
 	return isUsernameAvailable, err
 }
 
+// GetUserInfo retrieves user account information for the supplied username.
 func (c *Client) GetUserInfo(username string) (*Account, error) {
-	url := fmt.Sprintf("%s/user/%s/about.json", baseUrl, username)
+	url := fmt.Sprintf("%s/user/%s/about.json", baseURL, username)
 	resp, err := c.http.Get(url)
 	if err != nil {
 		return nil, err

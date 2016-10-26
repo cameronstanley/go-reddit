@@ -5,7 +5,8 @@ import (
 	"fmt"
 )
 
-type Article struct {
+// Link contains information about a link.
+type Link struct {
 	ApprovedBy          string        `json:"approved_by"`
 	Archived            bool          `json:"archived"`
 	Author              string        `json:"author"`
@@ -58,52 +59,52 @@ type Article struct {
 	Visited             bool          `json:"visited"`
 }
 
-type articleListing struct {
+type linkListing struct {
 	Kind string `json:"kind"`
 	Data struct {
 		Modhash  string `json:"modhash"`
 		Children []struct {
-			Kind string  `json:"kind"`
-			Data Article `json:"data"`
+			Kind string `json:"kind"`
+			Data Link   `json:"data"`
 		} `json:"children"`
 		After  string      `json:"after"`
 		Before interface{} `json:"before"`
 	} `json:"data"`
 }
 
-// Retrieves a listing of hot articles.
-func (c *Client) GetHotArticles(subreddit string) ([]*Article, error) {
-	return c.getArticles(subreddit, "hot")
+// GetHotLinks retrieves a listing of hot links.
+func (c *Client) GetHotLinks(subreddit string) ([]*Link, error) {
+	return c.getLinks(subreddit, "hot")
 }
 
-// Retrieves a listing of new articles.
-func (c *Client) GetNewArticles(subreddit string) ([]*Article, error) {
-	return c.getArticles(subreddit, "new")
+// GetNewLinks retrieves a listing of new links.
+func (c *Client) GetNewLinks(subreddit string) ([]*Link, error) {
+	return c.getLinks(subreddit, "new")
 }
 
-// Retrieves a listing of top articles
-func (c *Client) GetTopArticles(subreddit string) ([]*Article, error) {
-	return c.getArticles(subreddit, "top")
+// GetTopLinks retrieves a listing of top links.
+func (c *Client) GetTopLinks(subreddit string) ([]*Link, error) {
+	return c.getLinks(subreddit, "top")
 }
 
-func (c *Client) getArticles(subreddit string, sort string) ([]*Article, error) {
-	url := fmt.Sprintf("%s/r/%s/%s.json", baseUrl, subreddit, sort)
+func (c *Client) getLinks(subreddit string, sort string) ([]*Link, error) {
+	url := fmt.Sprintf("%s/r/%s/%s.json", baseURL, subreddit, sort)
 	resp, err := c.http.Get(url)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
 
-	var result articleListing
+	var result linkListing
 	err = json.NewDecoder(resp.Body).Decode(&result)
 	if err != nil {
 		return nil, err
 	}
 
-	var articles []*Article
-	for _, article := range result.Data.Children {
-		articles = append(articles, &article.Data)
+	var links []*Link
+	for _, link := range result.Data.Children {
+		links = append(links, &link.Data)
 	}
 
-	return articles, nil
+	return links, nil
 }

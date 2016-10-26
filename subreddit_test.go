@@ -8,7 +8,7 @@ import (
 )
 
 func TestGetDefaultSubreddits(t *testing.T) {
-	url := fmt.Sprintf("%s/subreddits/default.json", baseUrl)
+	url := fmt.Sprintf("%s/subreddits/default.json", baseURL)
 	mockResponseFromFile(url, "test_data/subreddit/default_subreddits.json")
 	defer httpmock.DeactivateAndReset()
 
@@ -19,7 +19,7 @@ func TestGetDefaultSubreddits(t *testing.T) {
 }
 
 func TestGetGoldSubreddits(t *testing.T) {
-	url := fmt.Sprintf("%s/subreddits/gold.json", baseUrl)
+	url := fmt.Sprintf("%s/subreddits/gold.json", baseURL)
 	mockResponseFromFile(url, "test_data/subreddit/gold_subreddits.json")
 	defer httpmock.DeactivateAndReset()
 
@@ -30,7 +30,7 @@ func TestGetGoldSubreddits(t *testing.T) {
 }
 
 func TestGetNewSubreddits(t *testing.T) {
-	url := fmt.Sprintf("%s/subreddits/new.json", baseUrl)
+	url := fmt.Sprintf("%s/subreddits/new.json", baseURL)
 	mockResponseFromFile(url, "test_data/subreddit/new_subreddits.json")
 	defer httpmock.DeactivateAndReset()
 
@@ -41,7 +41,7 @@ func TestGetNewSubreddits(t *testing.T) {
 }
 
 func TestGetPopularSubreddits(t *testing.T) {
-	url := fmt.Sprintf("%s/subreddits/popular.json", baseUrl)
+	url := fmt.Sprintf("%s/subreddits/popular.json", baseURL)
 	mockResponseFromFile(url, "test_data/subreddit/popular_subreddits.json")
 	defer httpmock.DeactivateAndReset()
 

@@ -5,6 +5,7 @@ import (
 	"fmt"
 )
 
+// Subreddit contains subreddit information.
 type Subreddit struct {
 	AccountsActive          int    `json:"accounts_active"`
 	BannerImg               string `json:"banner_img"`
@@ -63,28 +64,28 @@ type subredditListing struct {
 	} `json:"data"`
 }
 
-// Retrieves a listing of default subreddits
+// GetDefaultSubreddits retrieves a listing of default subreddits.
 func (c *Client) GetDefaultSubreddits() ([]*Subreddit, error) {
 	return c.getSubreddits("default")
 }
 
-// Retrieves a listing of gold subreddits
+// GetGoldSubreddits retrieves a listing of gold subreddits.
 func (c *Client) GetGoldSubreddits() ([]*Subreddit, error) {
 	return c.getSubreddits("gold")
 }
 
-// Retrieves a listing of new subreddits
+// GetNewSubreddits retrieves a listing of new subreddits.
 func (c *Client) GetNewSubreddits() ([]*Subreddit, error) {
 	return c.getSubreddits("new")
 }
 
-// Retrieves a listing of popular subreddits
+// GetPopularSubreddits retrieves a listing of popular subreddits.
 func (c *Client) GetPopularSubreddits() ([]*Subreddit, error) {
 	return c.getSubreddits("popular")
 }
 
 func (c *Client) getSubreddits(where string) ([]*Subreddit, error) {
-	url := fmt.Sprintf("%s/subreddits/%s.json", baseUrl, where)
+	url := fmt.Sprintf("%s/subreddits/%s.json", baseURL, where)
 	resp, err := c.http.Get(url)
 	if err != nil {
 		return nil, err

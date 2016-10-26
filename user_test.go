@@ -8,7 +8,7 @@ import (
 )
 
 func TestIsUsernameAvailable(t *testing.T) {
-	url := fmt.Sprintf("%s/api/username_available.json?user=GovSchwarzenegger", baseUrl)
+	url := fmt.Sprintf("%s/api/username_available.json?user=GovSchwarzenegger", baseURL)
 	httpmock.Activate()
 	httpmock.RegisterResponder("GET", url, httpmock.NewStringResponder(200, "false"))
 	defer httpmock.DeactivateAndReset()
@@ -20,7 +20,7 @@ func TestIsUsernameAvailable(t *testing.T) {
 }
 
 func TestGetUserInfo(t *testing.T) {
-	url := fmt.Sprintf("%s/user/GovSchwarzenegger/about.json", baseUrl)
+	url := fmt.Sprintf("%s/user/GovSchwarzenegger/about.json", baseURL)
 	mockResponseFromFile(url, "test_data/user/user_info.json")
 	defer httpmock.DeactivateAndReset()
 

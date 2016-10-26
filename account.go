@@ -5,6 +5,7 @@ import (
 	"fmt"
 )
 
+// Account contains user account information.
 type Account struct {
 	CommentKarma int `json:"comment_karma"`
 	Created      int `json:"created"`
@@ -65,8 +66,9 @@ type Account struct {
 	SuspensionExpirationUtc int    `json:"suspension_expiration_utc"`
 }
 
+// GetMe retrieves the user account for the currently authenticated user. Requires the 'identity' OAuth scope.
 func (c *Client) GetMe() (*Account, error) {
-	url := fmt.Sprintf("%s/api/v1/me", baseAuthUrl)
+	url := fmt.Sprintf("%s/api/v1/me", baseAuthURL)
 	resp, err := c.http.Get(url)
 	if err != nil {
 		return nil, err
