@@ -63,7 +63,7 @@ type subredditListing struct {
 	} `json:"data"`
 }
 
-// Retrievves a listing of default subreddits
+// Retrieves a listing of default subreddits
 func (c *Client) GetDefaultSubreddits() ([]*Subreddit, error) {
 	return c.getSubreddits("default")
 }

@@ -7,6 +7,18 @@ import (
 	"testing"
 )
 
+func TestIsUsernameAvailable(t *testing.T) {
+	url := fmt.Sprintf("%s/api/username_available.json?user=GovSchwarzenegger", baseUrl)
+	httpmock.Activate()
+	httpmock.RegisterResponder("GET", url, httpmock.NewStringResponder(200, "false"))
+	defer httpmock.DeactivateAndReset()
+
+	client := NoAuthClient
+	isUsernameAvailable, err := client.IsUsernameAvailable("GovSchwarzenegger")
+	assert.NoError(t, err)
+	assert.Equal(t, isUsernameAvailable, false)
+}
+
 func TestGetUserInfo(t *testing.T) {
 	url := fmt.Sprintf("%s/user/GovSchwarzenegger/about.json", baseUrl)
 	mockResponseFromFile(url, "test_data/user/user_info.json")
