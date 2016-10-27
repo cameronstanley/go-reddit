@@ -41,6 +41,13 @@ type Comment struct {
 	UserReports         []interface{} `json:"user_reports"`
 }
 
-func GetArticleComments(articleID string) {
+func (c *Client) GetLinkComments(linkID string) ([]*Comment, error) {
+  url := fmt.Sprintf("%s/comments/%s", baseURL, linkID)
+  resp, err := c.http.Get(url)
+  if err != nil {
+    return nil, err
+  }
+  defer.Body.Close()
 
+  return nil, nil
 }
