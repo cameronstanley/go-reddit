@@ -1,0 +1,46 @@
+package reddit
+
+import (
+//	"encoding/json"
+//	"fmt"
+)
+
+type Comment struct {
+	ApprovedBy          interface{}   `json:"approved_by"`
+	Archived            bool          `json:"archived"`
+	Author              string        `json:"author"`
+	AuthorFlairCSSClass interface{}   `json:"author_flair_css_class"`
+	AuthorFlairText     interface{}   `json:"author_flair_text"`
+	BannedBy            interface{}   `json:"banned_by"`
+	Body                string        `json:"body"`
+	BodyHTML            string        `json:"body_html"`
+	Controversiality    int           `json:"controversiality"`
+	Created             int           `json:"created"`
+	CreatedUtc          int           `json:"created_utc"`
+	Distinguished       interface{}   `json:"distinguished"`
+	Downs               int           `json:"downs"`
+	Edited              bool          `json:"edited"`
+	Gilded              int           `json:"gilded"`
+	ID                  string        `json:"id"`
+	Likes               interface{}   `json:"likes"`
+	LinkID              string        `json:"link_id"`
+	ModReports          []interface{} `json:"mod_reports"`
+	Name                string        `json:"name"`
+	NumReports          interface{}   `json:"num_reports"`
+	ParentID            string        `json:"parent_id"`
+	RemovalReason       interface{}   `json:"removal_reason"`
+	ReportReasons       interface{}   `json:"report_reasons"`
+	Replies             string        `json:"replies"`
+	Saved               bool          `json:"saved"`
+	Score               int           `json:"score"`
+	ScoreHidden         bool          `json:"score_hidden"`
+	Stickied            bool          `json:"stickied"`
+	Subreddit           string        `json:"subreddit"`
+	SubredditID         string        `json:"subreddit_id"`
+	Ups                 int           `json:"ups"`
+	UserReports         []interface{} `json:"user_reports"`
+}
+
+func GetArticleComments(articleID string) {
+
+}
