@@ -50,6 +50,7 @@ func main() {
   
   // Create a new client using the access token
   client := authenticator.GetAuthClient(token)
+}
 ````
 
 ## Examples
