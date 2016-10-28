@@ -2,7 +2,7 @@ package reddit
 
 import (
 //	"encoding/json"
-//	"fmt"
+	"fmt"
 )
 
 type Comment struct {
@@ -47,7 +47,7 @@ func (c *Client) GetLinkComments(linkID string) ([]*Comment, error) {
   if err != nil {
     return nil, err
   }
-  defer.Body.Close()
+  defer resp.Body.Close()
 
   return nil, nil
 }
