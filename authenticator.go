@@ -2,10 +2,7 @@ package reddit
 
 import (
 	"errors"
-  "fmt"
 	"golang.org/x/oauth2"
-  "io/ioutil"
-  "net/http"
 )
 
 // Authenticator provides functions for authenticating a user via OAuth2 and generating a client that can be used to access authorized API endpoints.
@@ -83,26 +80,7 @@ func (a *Authenticator) GetToken(state string, code string) (*oauth2.Token, erro
 		return nil, errors.New("Invalid state")
 	}
 
-  req, err := http.NewRequest("POST", tokenURL, nil)
-  req.SetBasicAuth(a.config.ClientID, a.config.ClientSecret)
-  req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-  client := &http.Client{}
-  resp, err := client.Do(req)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  bs, err := ioutil.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
-  }
-
-  fmt.Println("Result")
-  fmt.Println(string(bs))
-
-  return nil, nil
-	// return a.config.Exchange(oauth2.NoContext, code)
+	return a.config.Exchange(oauth2.NoContext, code)
 }
 
 // GetAuthClient generates a new authenticated client using the supplied access token.
