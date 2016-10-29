@@ -3,13 +3,14 @@ package reddit
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 )
 
 // Account contains user account information.
 type Account struct {
-	CommentKarma int `json:"comment_karma"`
-	Created      int `json:"created"`
-	CreatedUtc   int `json:"created_utc"`
+	CommentKarma int     `json:"comment_karma"`
+	Created      float32 `json:"created"`
+	CreatedUtc   float32 `json:"created_utc"`
 	Features     struct {
 		ActivityServiceRead    bool `json:"activity_service_read"`
 		ActivityServiceWrite   bool `json:"activity_service_write"`
@@ -69,7 +70,14 @@ type Account struct {
 // GetMe retrieves the user account for the currently authenticated user. Requires the 'identity' OAuth scope.
 func (c *Client) GetMe() (*Account, error) {
 	url := fmt.Sprintf("%s/api/v1/me", baseAuthURL)
-	resp, err := c.http.Get(url)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("User-Agent", c.userAgent)
+
+	resp, err := c.http.Do(req)
 	if err != nil {
 		return nil, err
 	}

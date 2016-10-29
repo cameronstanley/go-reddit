@@ -12,7 +12,8 @@ const (
 
 // Client is the client for interacting with the Reddit API.
 type Client struct {
-	http *http.Client
+	http      *http.Client
+	userAgent string
 }
 
 // NoAuthClient is the unauthenticated client for interacting with the Reddit API.

@@ -1,7 +1,7 @@
 package reddit
 
 import (
-//	"encoding/json"
+	//	"encoding/json"
 	"fmt"
 )
 
@@ -42,12 +42,12 @@ type Comment struct {
 }
 
 func (c *Client) GetLinkComments(linkID string) ([]*Comment, error) {
-  url := fmt.Sprintf("%s/comments/%s", baseURL, linkID)
-  resp, err := c.http.Get(url)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
+	url := fmt.Sprintf("%s/comments/%s", baseURL, linkID)
+	resp, err := c.http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
 
-  return nil, nil
+	return nil, nil
 }

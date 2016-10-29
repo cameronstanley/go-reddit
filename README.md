@@ -48,8 +48,8 @@ func main() {
   // Exchange the code for an access token
   token, err := authenticator.GetToken(state, code)
   
-  // Create a new client using the access token
-  client := authenticator.GetAuthClient(token)
+  // Create a new client using the access token and a user agent string to identify your application
+  client := authenticator.GetAuthClient(token, "<platform>:<app ID>:<version string> (by /u/<reddit username>)")
 }
 ````
 
