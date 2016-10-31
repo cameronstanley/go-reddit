@@ -1,6 +1,7 @@
 package reddit
 
 import (
+  "bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -89,4 +90,34 @@ func (c *Client) GetMyPreferences() (*Preferences, error) {
 	}
 
 	return &preferences, nil
+}
+
+// UpdateMyPreferences updates the accouunt preferences for the currently authenticated user. Requires the 'account' OAuth scope.
+func (c *Client) UpdateMyPreferences(preferences *Preferences) (*Preferences, error) {
+	url := fmt.Sprintf("%s/api/v1/me/preferences", baseAuthURL)
+  buffer := new(bytes.Buffer)
+  json.NewEncoder(buffer).Encode(preferences)
+	req, err := http.NewRequest("PATCH", url, buffer)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("User-Agent", c.userAgent)
+  req.Header.Add("Content-Type", "application/json")
+
+	resp, err := c.http.Do(req)
+	if err != nil {
+		return nil, err
+	} else if resp.StatusCode >= 400 {
+		return nil, errors.New(fmt.Sprintf("HTTP Status Code: %d", resp.StatusCode))
+	}
+	defer resp.Body.Close()
+
+	var updatedPreferences Preferences
+	err = json.NewDecoder(resp.Body).Decode(&updatedPreferences)
+	if err != nil {
+		return nil, err
+	}
+
+	return &updatedPreferences, nil
 }
