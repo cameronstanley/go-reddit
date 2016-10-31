@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestMyTrophies(t *testing.T) {
+func TestGetMyTrophies(t *testing.T) {
 	url := fmt.Sprintf("%s/api/v1/me/trophies", baseAuthURL)
 	mockResponseFromFile(url, "test_data/award/my_trophies.json")
 	defer httpmock.DeactivateAndReset()
