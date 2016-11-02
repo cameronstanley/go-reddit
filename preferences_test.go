@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/jarcoal/httpmock"
 	"github.com/stretchr/testify/assert"
-  "io/ioutil"
+	"io/ioutil"
 	"testing"
 )
 
@@ -23,13 +23,13 @@ func TestGetMyPreferences(t *testing.T) {
 
 func TestUpdateMyPreferences(t *testing.T) {
 	url := fmt.Sprintf("%s/api/v1/me/preferences", baseAuthURL)
-  httpmock.Activate()
-  response, _ := ioutil.ReadFile("test_data/preferences/my_preferences.json")
-  httpmock.RegisterResponder("PATCH", url, httpmock.NewStringResponder(200, string(response)))
+	httpmock.Activate()
+	response, _ := ioutil.ReadFile("test_data/preferences/my_preferences.json")
+	httpmock.RegisterResponder("PATCH", url, httpmock.NewStringResponder(200, string(response)))
 	defer httpmock.DeactivateAndReset()
 
 	client := NoAuthClient
-  preferences := &Preferences{NumComments: 600}
+	preferences := &Preferences{NumComments: 600}
 	_, err := client.UpdateMyPreferences(preferences)
 	assert.NoError(t, err)
 }

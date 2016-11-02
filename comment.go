@@ -1,10 +1,15 @@
 package reddit
 
 import (
-	//	"encoding/json"
+	"bytes"
+	"errors"
 	"fmt"
+	"net/http"
+	"net/url"
+	"strconv"
 )
 
+// Comment is a response to a link or another comment.
 type Comment struct {
 	ApprovedBy          interface{}   `json:"approved_by"`
 	Archived            bool          `json:"archived"`
@@ -41,6 +46,7 @@ type Comment struct {
 	UserReports         []interface{} `json:"user_reports"`
 }
 
+// GetLinkComments retrieves a listing of comments for the given link.
 func (c *Client) GetLinkComments(linkID string) ([]*Comment, error) {
 	url := fmt.Sprintf("%s/comments/%s", baseURL, linkID)
 	resp, err := c.http.Get(url)
@@ -50,4 +56,30 @@ func (c *Client) GetLinkComments(linkID string) ([]*Comment, error) {
 	defer resp.Body.Close()
 
 	return nil, nil
+}
+
+// DeleteComment deletes a comment submitted by the currently authenticated user. Requires the 'edit' OAuth scope.
+func (c *Client) DeleteComment(commentID string) error {
+	data := url.Values{}
+	data.Set("id", commentID)
+	url := fmt.Sprintf("%s/api/del", baseAuthURL)
+	req, err := http.NewRequest("POST", url, bytes.NewBufferString(data.Encode()))
+
+	if err != nil {
+		return err
+	}
+
+	req.Header.Add("User-Agent", c.userAgent)
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Add("Content-Length", strconv.Itoa(len(data.Encode())))
+
+	resp, err := c.http.Do(req)
+	if err != nil {
+		return err
+	} else if resp.StatusCode >= 400 {
+		return errors.New(fmt.Sprintf("HTTP Status Code: %d", resp.StatusCode))
+	}
+	defer resp.Body.Close()
+
+	return nil
 }

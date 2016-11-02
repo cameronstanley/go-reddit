@@ -1,13 +1,14 @@
 package reddit
 
 import (
-  "bytes"
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
 )
 
+// Preferences contains a user's account preferences.
 type Preferences struct {
 	AffiliateLinks         bool        `json:"affiliate_links"`
 	AllowClicktracking     bool        `json:"allow_clicktracking"`
@@ -95,15 +96,15 @@ func (c *Client) GetMyPreferences() (*Preferences, error) {
 // UpdateMyPreferences updates the accouunt preferences for the currently authenticated user. Requires the 'account' OAuth scope.
 func (c *Client) UpdateMyPreferences(preferences *Preferences) (*Preferences, error) {
 	url := fmt.Sprintf("%s/api/v1/me/preferences", baseAuthURL)
-  buffer := new(bytes.Buffer)
-  json.NewEncoder(buffer).Encode(preferences)
+	buffer := new(bytes.Buffer)
+	json.NewEncoder(buffer).Encode(preferences)
 	req, err := http.NewRequest("PATCH", url, buffer)
 	if err != nil {
 		return nil, err
 	}
 
 	req.Header.Add("User-Agent", c.userAgent)
-  req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Content-Type", "application/json")
 
 	resp, err := c.http.Do(req)
 	if err != nil {
