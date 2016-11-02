@@ -72,6 +72,11 @@ type linkListing struct {
 	} `json:"data"`
 }
 
+// DeleteLink deletes a link submitted by the currently authenticated user. Requires the 'edit' OAuth scope.
+func (c *Client) DeleteLink(linkID string) error {
+  return c.deleteThing(fmt.Sprintf("t3_%s", linkID))
+}
+
 // GetHotLinks retrieves a listing of hot links.
 func (c *Client) GetHotLinks(subreddit string) ([]*Link, error) {
 	return c.getLinks(subreddit, "hot")

@@ -7,6 +7,17 @@ import (
 	"testing"
 )
 
+func TestDeleteLink(t *testing.T) {
+	url := fmt.Sprintf("%s/api/del", baseAuthURL)
+	httpmock.Activate()
+	httpmock.RegisterResponder("POST", url, httpmock.NewStringResponder(200, "{}"))
+	defer httpmock.DeactivateAndReset()
+
+	client := NoAuthClient
+	err := client.DeleteLink("5ans3h")
+	assert.NoError(t, err)
+}
+
 func TestGetHotLinks(t *testing.T) {
 	url := fmt.Sprintf("%s/r/news/hot.json", baseURL)
 	mockResponseFromFile(url, "test_data/link/hot_links.json")

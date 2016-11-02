@@ -14,6 +14,6 @@ func TestDeleteComment(t *testing.T) {
 	defer httpmock.DeactivateAndReset()
 
 	client := NoAuthClient
-	err := client.DeleteComment("t1_d9hthja")
+	err := client.DeleteComment("d9hthja")
 	assert.NoError(t, err)
 }
