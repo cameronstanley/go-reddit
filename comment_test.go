@@ -17,3 +17,14 @@ func TestDeleteComment(t *testing.T) {
 	err := client.DeleteComment("d9hthja")
 	assert.NoError(t, err)
 }
+
+func TestEditCommentText(t *testing.T) {
+	url := fmt.Sprintf("%s/api/editusertext", baseAuthURL)
+	httpmock.Activate()
+	httpmock.RegisterResponder("POST", url, httpmock.NewStringResponder(200, "{}"))
+	defer httpmock.DeactivateAndReset()
+
+	client := NoAuthClient
+	err := client.EditCommentText("d9hthja", "Hello World!")
+	assert.NoError(t, err)
+}

@@ -2,12 +2,12 @@
 package reddit
 
 import (
-  "bytes"
-  "errors"
-  "fmt"
+	"bytes"
+	"errors"
+	"fmt"
 	"net/http"
-  "net/url"
-  "strconv"
+	"net/url"
+	"strconv"
 )
 
 const (
@@ -30,6 +30,33 @@ func (c *Client) deleteThing(fullname string) error {
 	data := url.Values{}
 	data.Set("id", fullname)
 	url := fmt.Sprintf("%s/api/del", baseAuthURL)
+	req, err := http.NewRequest("POST", url, bytes.NewBufferString(data.Encode()))
+
+	if err != nil {
+		return err
+	}
+
+	req.Header.Add("User-Agent", c.userAgent)
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Add("Content-Length", strconv.Itoa(len(data.Encode())))
+
+	resp, err := c.http.Do(req)
+	if err != nil {
+		return err
+	} else if resp.StatusCode >= 400 {
+		return errors.New(fmt.Sprintf("HTTP Status Code: %d", resp.StatusCode))
+	}
+	defer resp.Body.Close()
+
+	return nil
+}
+
+func (c *Client) editThingText(fullname string, text string) error {
+	data := url.Values{}
+	data.Set("thing_id", fullname)
+	data.Set("text", text)
+	data.Set("api_type", "json")
+	url := fmt.Sprintf("%s/api/editusertext", baseAuthURL)
 	req, err := http.NewRequest("POST", url, bytes.NewBufferString(data.Encode()))
 
 	if err != nil {

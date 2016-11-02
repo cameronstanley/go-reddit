@@ -41,6 +41,18 @@ type Comment struct {
 	UserReports         []interface{} `json:"user_reports"`
 }
 
+const commentType = "t1"
+
+// DeleteComment deletes a comment submitted by the currently authenticated user. Requires the 'edit' OAuth scope.
+func (c *Client) DeleteComment(commentID string) error {
+	return c.deleteThing(fmt.Sprintf("%s_%s", commentType, commentID))
+}
+
+// EditCommentText edits the text of a comment by the currently authenticated user. Requires the 'edit' OAuth scope.
+func (c *Client) EditCommentText(commentID string, text string) error {
+	return c.editThingText(fmt.Sprintf("%s_%s", commentType, commentID), text)
+}
+
 // GetLinkComments retrieves a listing of comments for the given link.
 func (c *Client) GetLinkComments(linkID string) ([]*Comment, error) {
 	url := fmt.Sprintf("%s/comments/%s", baseURL, linkID)
@@ -51,9 +63,4 @@ func (c *Client) GetLinkComments(linkID string) ([]*Comment, error) {
 	defer resp.Body.Close()
 
 	return nil, nil
-}
-
-// DeleteComment deletes a comment submitted by the currently authenticated user. Requires the 'edit' OAuth scope.
-func (c *Client) DeleteComment(commentID string) error {
-  return c.deleteThing(fmt.Sprintf("t1_%s", commentID))
 }

@@ -59,6 +59,8 @@ type Link struct {
 	Visited             bool          `json:"visited"`
 }
 
+const linkType = "t3"
+
 type linkListing struct {
 	Kind string `json:"kind"`
 	Data struct {
@@ -74,7 +76,12 @@ type linkListing struct {
 
 // DeleteLink deletes a link submitted by the currently authenticated user. Requires the 'edit' OAuth scope.
 func (c *Client) DeleteLink(linkID string) error {
-  return c.deleteThing(fmt.Sprintf("t3_%s", linkID))
+	return c.deleteThing(fmt.Sprintf("%s_%s", linkType, linkID))
+}
+
+// EditLinkText edits the text of a self post by the currently authenticated user. Requires the 'edit' OAuth scope.
+func (c *Client) EditLinkText(linkID string, text string) error {
+	return c.editThingText(fmt.Sprintf("%s_%s", linkType, linkID), text)
 }
 
 // GetHotLinks retrieves a listing of hot links.

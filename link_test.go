@@ -18,6 +18,17 @@ func TestDeleteLink(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func TestEditLinkText(t *testing.T) {
+	url := fmt.Sprintf("%s/api/editusertext", baseAuthURL)
+	httpmock.Activate()
+	httpmock.RegisterResponder("POST", url, httpmock.NewStringResponder(200, "{}"))
+	defer httpmock.DeactivateAndReset()
+
+	client := NoAuthClient
+	err := client.EditLinkText("5ans3h", "Hello World!")
+	assert.NoError(t, err)
+}
+
 func TestGetHotLinks(t *testing.T) {
 	url := fmt.Sprintf("%s/r/news/hot.json", baseURL)
 	mockResponseFromFile(url, "test_data/link/hot_links.json")
