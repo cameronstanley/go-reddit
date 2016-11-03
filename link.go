@@ -3,6 +3,7 @@ package reddit
 import (
 	"encoding/json"
 	"fmt"
+  "net/http"
 )
 
 // Link contains information about a link.
@@ -101,7 +102,14 @@ func (c *Client) GetTopLinks(subreddit string) ([]*Link, error) {
 
 func (c *Client) getLinks(subreddit string, sort string) ([]*Link, error) {
 	url := fmt.Sprintf("%s/r/%s/%s.json", baseURL, subreddit, sort)
-	resp, err := c.http.Get(url)
+  req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+  req.Header.Add("User-Agent", c.userAgent)
+
+  resp, err := c.http.Do(req)
 	if err != nil {
 		return nil, err
 	}

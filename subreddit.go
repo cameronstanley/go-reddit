@@ -3,6 +3,7 @@ package reddit
 import (
 	"encoding/json"
 	"fmt"
+  "net/http"
 )
 
 // Subreddit contains subreddit information.
@@ -86,7 +87,14 @@ func (c *Client) GetPopularSubreddits() ([]*Subreddit, error) {
 
 func (c *Client) getSubreddits(where string) ([]*Subreddit, error) {
 	url := fmt.Sprintf("%s/subreddits/%s.json", baseURL, where)
-	resp, err := c.http.Get(url)
+  req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+  req.Header.Add("User-Agent", c.userAgent)
+
+  resp, err := c.http.Do(req)
 	if err != nil {
 		return nil, err
 	}
