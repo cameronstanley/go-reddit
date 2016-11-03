@@ -3,7 +3,7 @@ package reddit
 import (
 	"encoding/json"
 	"fmt"
-  "net/http"
+	"net/http"
 )
 
 // Link contains information about a link.
@@ -100,16 +100,21 @@ func (c *Client) GetTopLinks(subreddit string) ([]*Link, error) {
 	return c.getLinks(subreddit, "top")
 }
 
+// CommentOnLink posts a top-level comment to the given link. Requires the 'submit' scope.
+func (c *Client) CommentOnLink(linkID string, text string) error {
+	return c.commentOnThing(fmt.Sprintf("%s_%s", linkType, linkID), text)
+}
+
 func (c *Client) getLinks(subreddit string, sort string) ([]*Link, error) {
 	url := fmt.Sprintf("%s/r/%s/%s.json", baseURL, subreddit, sort)
-  req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
 
-  req.Header.Add("User-Agent", c.userAgent)
+	req.Header.Add("User-Agent", c.userAgent)
 
-  resp, err := c.http.Do(req)
+	resp, err := c.http.Do(req)
 	if err != nil {
 		return nil, err
 	}
