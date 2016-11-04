@@ -1,5 +1,9 @@
 package reddit
 
+import(
+  "fmt"
+)
+
 // Message is a private message between users.
 type Message struct {
 	Author           string      `json:"author"`
@@ -22,6 +26,8 @@ type Message struct {
 	WasComment       bool        `json:"was_comment"`
 }
 
+const messageType string = "t4"
+
 // GetInboxMessages retrieves a list of messages in the user's inbox. Requires the 'privatemessages' OAuth scope.
 func (c *Client) GetInboxMessages() ([]*Message, error) {
 	return c.getMessages("inbox")
@@ -35,6 +41,11 @@ func (c *Client) GetUnreadMessages() ([]*Message, error) {
 // GetSentMessages retrieves a list of messages sent by the user. Requires the 'privatemessages' OAuth scope.
 func (c *Client) GetSentMessages() ([]*Message, error) {
 	return c.getMessages("sent")
+}
+
+// ReplyToMessage creates a reply to a message sent to the user. Requires the 'privatemessages' scope.
+func (c *Client) ReplyToMessage(messageID string, text string) error {
+	return c.commentOnThing(fmt.Sprintf("%s_%s", messageType, messageID), text)
 }
 
 func (c *Client) getMessages(where string) ([]*Message, error) {
