@@ -65,7 +65,7 @@ func (c *Client) GetLinkComments(linkID string) ([]*Comment, error) {
 	return nil, nil
 }
 
-// ReplyToComment creates a reply to the given comment. Requires the 'submit' scope.
+// ReplyToComment creates a reply to the given comment. Requires the 'submit' OAuth scope.
 func (c *Client) ReplyToComment(commentID string, text string) error {
 	return c.commentOnThing(fmt.Sprintf("%s_%s", commentType, commentID), text)
 }

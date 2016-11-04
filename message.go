@@ -43,7 +43,7 @@ func (c *Client) GetSentMessages() ([]*Message, error) {
 	return c.getMessages("sent")
 }
 
-// ReplyToMessage creates a reply to a message sent to the user. Requires the 'privatemessages' scope.
+// ReplyToMessage creates a reply to a message sent to the user. Requires the 'privatemessages' OAuth scope.
 func (c *Client) ReplyToMessage(messageID string, text string) error {
 	return c.commentOnThing(fmt.Sprintf("%s_%s", messageType, messageID), text)
 }

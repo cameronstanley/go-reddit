@@ -100,7 +100,7 @@ func (c *Client) GetTopLinks(subreddit string) ([]*Link, error) {
 	return c.getLinks(subreddit, "top")
 }
 
-// CommentOnLink posts a top-level comment to the given link. Requires the 'submit' scope.
+// CommentOnLink posts a top-level comment to the given link. Requires the 'submit' OAuth scope.
 func (c *Client) CommentOnLink(linkID string, text string) error {
 	return c.commentOnThing(fmt.Sprintf("%s_%s", linkType, linkID), text)
 }
