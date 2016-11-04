@@ -1,7 +1,7 @@
 package reddit
 
-import(
-  "fmt"
+import (
+	"fmt"
 )
 
 // Message is a private message between users.

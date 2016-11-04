@@ -8,8 +8,8 @@ import (
 )
 
 func TestReplyToMessage(t *testing.T) {
-  url := fmt.Sprintf("%s/api/comment", baseAuthURL)
-  httpmock.Activate()
+	url := fmt.Sprintf("%s/api/comment", baseAuthURL)
+	httpmock.Activate()
 	httpmock.RegisterResponder("POST", url, httpmock.NewStringResponder(200, "{}"))
 	defer httpmock.DeactivateAndReset()
 

@@ -30,8 +30,8 @@ func TestEditCommentText(t *testing.T) {
 }
 
 func TestReplyToComment(t *testing.T) {
-  url := fmt.Sprintf("%s/api/comment", baseAuthURL)
-  httpmock.Activate()
+	url := fmt.Sprintf("%s/api/comment", baseAuthURL)
+	httpmock.Activate()
 	httpmock.RegisterResponder("POST", url, httpmock.NewStringResponder(200, "{}"))
 	defer httpmock.DeactivateAndReset()
 
@@ -39,5 +39,3 @@ func TestReplyToComment(t *testing.T) {
 	err := client.ReplyToComment("d9hthja", "Hello World!")
 	assert.NoError(t, err)
 }
-
-

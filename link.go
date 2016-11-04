@@ -1,9 +1,13 @@
 package reddit
 
 import (
+	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
+	"strconv"
 )
 
 // Link contains information about a link.
@@ -75,6 +79,11 @@ type linkListing struct {
 	} `json:"data"`
 }
 
+// CommentOnLink posts a top-level comment to the given link. Requires the 'submit' OAuth scope.
+func (c *Client) CommentOnLink(linkID string, text string) error {
+	return c.commentOnThing(fmt.Sprintf("%s_%s", linkType, linkID), text)
+}
+
 // DeleteLink deletes a link submitted by the currently authenticated user. Requires the 'edit' OAuth scope.
 func (c *Client) DeleteLink(linkID string) error {
 	return c.deleteThing(fmt.Sprintf("%s_%s", linkType, linkID))
@@ -100,9 +109,30 @@ func (c *Client) GetTopLinks(subreddit string) ([]*Link, error) {
 	return c.getLinks(subreddit, "top")
 }
 
-// CommentOnLink posts a top-level comment to the given link. Requires the 'submit' OAuth scope.
-func (c *Client) CommentOnLink(linkID string, text string) error {
-	return c.commentOnThing(fmt.Sprintf("%s_%s", linkType, linkID), text)
+// HideLink removes the given link from the user's default view of subreddit listings. Requires the 'report' OAuth scope.
+func (c *Client) HideLink(linkID string) error {
+	data := url.Values{}
+	data.Set("id", fmt.Sprintf("%s_%s", linkType, linkID))
+	url := fmt.Sprintf("%s/api/hide", baseAuthURL)
+	req, err := http.NewRequest("POST", url, bytes.NewBufferString(data.Encode()))
+
+	if err != nil {
+		return err
+	}
+
+	req.Header.Add("User-Agent", c.userAgent)
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Add("Content-Length", strconv.Itoa(len(data.Encode())))
+
+	resp, err := c.http.Do(req)
+	if err != nil {
+		return err
+	} else if resp.StatusCode >= 400 {
+		return errors.New(fmt.Sprintf("HTTP Status Code: %d", resp.StatusCode))
+	}
+	defer resp.Body.Close()
+
+	return nil
 }
 
 func (c *Client) getLinks(subreddit string, sort string) ([]*Link, error) {

@@ -19,8 +19,8 @@ func TestDeleteLink(t *testing.T) {
 }
 
 func TestCommentOnLink(t *testing.T) {
-  url := fmt.Sprintf("%s/api/comment", baseAuthURL)
-  httpmock.Activate()
+	url := fmt.Sprintf("%s/api/comment", baseAuthURL)
+	httpmock.Activate()
 	httpmock.RegisterResponder("POST", url, httpmock.NewStringResponder(200, "{}"))
 	defer httpmock.DeactivateAndReset()
 
@@ -71,4 +71,15 @@ func TestGetTopLinks(t *testing.T) {
 	links, err := client.GetTopLinks("news")
 	assert.NoError(t, err)
 	assert.Equal(t, len(links), 3)
+}
+
+func TestHideLink(t *testing.T) {
+	url := fmt.Sprintf("%s/api/hide", baseAuthURL)
+	httpmock.Activate()
+	httpmock.RegisterResponder("POST", url, httpmock.NewStringResponder(200, "{}"))
+	defer httpmock.DeactivateAndReset()
+
+	client := NoAuthClient
+	err := client.HideLink("5ans3h")
+	assert.NoError(t, err)
 }
