@@ -1,14 +1,19 @@
 package reddit
 
 import (
+	"context"
+	"encoding/base64"
 	"errors"
+	"net/http"
+
 	"golang.org/x/oauth2"
 )
 
 // Authenticator provides functions for authenticating a user via OAuth2 and generating a client that can be used to access authorized API endpoints.
 type Authenticator struct {
-	config *oauth2.Config
-	state  string
+	config    *oauth2.Config
+	state     string
+	userAgent string
 }
 
 const (
@@ -54,7 +59,7 @@ const (
 )
 
 // NewAuthenticator generates a new authenticator with the supplied client, state, and requested scopes.
-func NewAuthenticator(clientID string, clientSecret string, redirectURL string, state string, scopes ...string) *Authenticator {
+func NewAuthenticator(clientID string, clientSecret string, redirectURL string, userAgent string, state string, scopes ...string) *Authenticator {
 	config := &oauth2.Config{
 		ClientID:     clientID,
 		ClientSecret: clientSecret,
@@ -66,12 +71,33 @@ func NewAuthenticator(clientID string, clientSecret string, redirectURL string, 
 		RedirectURL: redirectURL,
 	}
 
-	return &Authenticator{config: config, state: state}
+	return &Authenticator{
+		config:    config,
+		state:     state,
+		userAgent: userAgent,
+	}
 }
 
 // GetAuthenticationURL retrieves the URL used to direct the authenticating user to Reddit for permissions approval.
 func (a *Authenticator) GetAuthenticationURL() string {
 	return a.config.AuthCodeURL(a.state)
+}
+
+type uaSetterTransport struct {
+	config    *oauth2.Config
+	userAgent string
+}
+
+func basicAuth(username, password string) string {
+	auth := username + ":" + password
+	return "Basic " + base64.StdEncoding.EncodeToString([]byte(auth))
+}
+
+func (t *uaSetterTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	req.Header.Set("User-Agent", t.userAgent)
+	req.Header.Set("Authorization", basicAuth(t.config.ClientID, t.config.ClientSecret))
+
+	return http.DefaultTransport.RoundTrip(req)
 }
 
 // GetToken exchanges an authorization code for an access token.
@@ -80,13 +106,31 @@ func (a *Authenticator) GetToken(state string, code string) (*oauth2.Token, erro
 		return nil, errors.New("Invalid state")
 	}
 
-	return a.config.Exchange(oauth2.NoContext, code)
+	tok := &oauth2.Token{
+		AccessToken: code,
+	}
+
+	tr := &oauth2.Transport{
+		Source: a.config.TokenSource(oauth2.NoContext, tok),
+		Base: &uaSetterTransport{
+			config:    a.config,
+			userAgent: a.userAgent,
+		},
+	}
+
+	client := &http.Client{
+		Transport: tr,
+	}
+
+	ctx := context.WithValue(oauth2.NoContext, oauth2.HTTPClient, client)
+
+	return a.config.Exchange(ctx, code)
 }
 
 // GetAuthClient generates a new authenticated client using the supplied access token.
-func (a *Authenticator) GetAuthClient(token *oauth2.Token, userAgent string) *Client {
+func (a *Authenticator) GetAuthClient(token *oauth2.Token) *Client {
 	return &Client{
 		http:      a.config.Client(oauth2.NoContext, token),
-		userAgent: userAgent,
+		userAgent: a.userAgent,
 	}
 }
