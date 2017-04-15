@@ -11,9 +11,10 @@ import (
 
 // Authenticator provides functions for authenticating a user via OAuth2 and generating a client that can be used to access authorized API endpoints.
 type Authenticator struct {
-	config    *oauth2.Config
-	state     string
-	userAgent string
+	config                *oauth2.Config
+	state                 string
+	userAgent             string
+	RequestPermanentToken bool
 }
 
 const (
@@ -80,7 +81,11 @@ func NewAuthenticator(clientID string, clientSecret string, redirectURL string, 
 
 // GetAuthenticationURL retrieves the URL used to direct the authenticating user to Reddit for permissions approval.
 func (a *Authenticator) GetAuthenticationURL() string {
-	return a.config.AuthCodeURL(a.state)
+	url := a.config.AuthCodeURL(a.state)
+	if a.RequestPermanentToken {
+		url += "&duration=permanent"
+	}
+	return url
 }
 
 type uaSetterTransport struct {
@@ -96,7 +101,6 @@ func basicAuth(username, password string) string {
 func (t *uaSetterTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	req.Header.Set("User-Agent", t.userAgent)
 	req.Header.Set("Authorization", basicAuth(t.config.ClientID, t.config.ClientSecret))
-
 	return http.DefaultTransport.RoundTrip(req)
 }
 
