@@ -100,6 +100,8 @@ func basicAuth(username, password string) string {
 
 func (t *uaSetterTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	req.Header.Set("User-Agent", t.userAgent)
+	// set a non-standard Authorization header because reddit demands it
+	// https://github.com/reddit/reddit/wiki/OAuth2#retrieving-the-access-token
 	req.Header.Set("Authorization", basicAuth(t.config.ClientID, t.config.ClientSecret))
 	return http.DefaultTransport.RoundTrip(req)
 }
@@ -110,22 +112,19 @@ func (a *Authenticator) GetToken(state string, code string) (*oauth2.Token, erro
 		return nil, errors.New("Invalid state")
 	}
 
-	tok := &oauth2.Token{
-		AccessToken: code,
-	}
-
-	tr := &oauth2.Transport{
-		Source: a.config.TokenSource(oauth2.NoContext, tok),
-		Base: &uaSetterTransport{
-			config:    a.config,
-			userAgent: a.userAgent,
+	// Construct a custom http client that forces the user-agent and attach it
+	// to the oauth2 context. https://github.com/golang/oauth2/issues/179
+	client := &http.Client{
+		Transport: &oauth2.Transport{
+			Source: a.config.TokenSource(oauth2.NoContext, &oauth2.Token{
+				AccessToken: code,
+			}),
+			Base: &uaSetterTransport{
+				config:    a.config,
+				userAgent: a.userAgent,
+			},
 		},
 	}
-
-	client := &http.Client{
-		Transport: tr,
-	}
-
 	ctx := context.WithValue(oauth2.NoContext, oauth2.HTTPClient, client)
 
 	return a.config.Exchange(ctx, code)
