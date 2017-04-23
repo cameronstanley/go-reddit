@@ -28,7 +28,8 @@ import(
 func main() {
   // Create a new authenticator with your app's client ID, secret, and redirect URI
   // A random string representing state and a list of requested OAuth scopes are required
-  authenticator := reddit.NewAuthenticator("<client_id>", "<client_secret>", "<redirect_uri>", "<random_string>", reddit.ScopeIdentity)
+  authenticator := reddit.NewAuthenticator("<client_id>", "<client_secret>", "<redirect_uri>", 
+     "<platform>:<app ID>:<version string> (by /u/<reddit username>)", "<random_string>", reddit.ScopeIdentity)
   
   // Instruct your user to visit the URL retrieved from GetAuthenticationURL in their web browser
   url := authenticator.GetAuthenticationURL()
@@ -49,7 +50,7 @@ func main() {
   token, err := authenticator.GetToken(state, code)
   
   // Create a new client using the access token and a user agent string to identify your application
-  client := authenticator.GetAuthClient(token, "<platform>:<app ID>:<version string> (by /u/<reddit username>)")
+  client := authenticator.GetAuthClient(token)
 }
 ````
 
